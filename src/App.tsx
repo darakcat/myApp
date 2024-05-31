@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ShopList from './pages/ShopList';
+import SalesDaily from './pages/SalesDaily';
 import PrivateRoute from './components/PrivateRoute';
 
 /* Core CSS required for Ionic components to work properly */
@@ -51,6 +52,7 @@ const App: React.FC = () => (
         <Route path="/login" component={Login} exact={true} />
         <PrivateRoute path="/main" component={Home} exact={true} />
         <PrivateRoute path="/shop" component={ShopList} exact={true} />
+        <PrivateRoute path="/sales-daily" component={SalesDaily} exact={true} />
         <Route exact path="/" render={() => <Redirect to="/home" />} />
       </IonRouterOutlet>
     </IonReactRouter>

@@ -18,7 +18,7 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(response => {
   return response;
 }, error => {
-  if (error.response && error.response.status === 403) {
+  if (error.response && (error.response.status === 403 || error.response.status === 401)) {
     localStorage.removeItem('token');
     window.location.href = '/login'; // 로그인 페이지로 리디렉션
   }

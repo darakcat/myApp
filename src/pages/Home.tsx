@@ -16,6 +16,10 @@ const Home: React.FC = () => {
     history.push('/shop');
   };
 
+  const navigateToSalesDaily = () => {
+    history.push('/sales-daily');
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -28,7 +32,8 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <h2>Welcome to the Main Page!</h2>
-        <IonButton onClick={navigateToShop}>Go to Shop</IonButton>
+        <IonButton onClick={navigateToShop}>Shop List</IonButton>
+        <IonButton onClick={navigateToSalesDaily}>Sales Daily</IonButton>
       </IonContent>
     </IonPage>
   );

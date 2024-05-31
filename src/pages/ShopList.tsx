@@ -16,9 +16,9 @@ const ShopList: React.FC = () => {
     const fetchPosts = async (page: number) => {
       setLoading(true);
       try {
-        const response = await axios.get(`/auth/manager?page=${page}`); // API 엔드포인트를 실제 API 주소로 변경하세요.
-        setPosts(response.data.shops);
-        setTotalPages(response.data.totalPages);
+        const response = await axios.get(`/channels`); // API 엔드포인트를 실제 API 주소로 변경하세요.
+        setPosts(response.data);
+        // setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
@@ -63,17 +63,18 @@ const ShopList: React.FC = () => {
         ) : (
           <IonList>
             {posts.map(post => (
-              <IonItem key={post.biz_num}>
+              <IonItem key={post.id}>
                 <IonLabel>
-                  <h2>{post.shop_name}</h2>
-                  <p>{post.category}</p>
+                  <h2>{post.type}</h2>
+                  <p>{post.accountName}</p>
+                  <p>{post.siteUrl}</p>
                 </IonLabel>
               </IonItem>
             ))}
           </IonList>
         )}
       </IonContent>
-      <IonFooter>
+      {/* <IonFooter>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
@@ -86,7 +87,7 @@ const ShopList: React.FC = () => {
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonFooter>
+      </IonFooter> */}
     </IonPage>
   );
 };

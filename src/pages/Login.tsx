@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8082/auth/token-manager', { id, password });
+      const response = await axios.post('http://127.0.0.1:8082/auth/token', { id, password });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       // 로그인 성공 후 페이지 이동 또는 상태 업데이트
