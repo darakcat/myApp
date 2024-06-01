@@ -6,6 +6,11 @@ import Select from 'react-select';
 import axios from '../utils/axios';
 import { useHistory } from 'react-router-dom';
 import LineChart from '../components/LineChart';
+import BarChart from '../components/BarChart';
+import { Storage } from '@ionic/storage';
+
+const storage = new Storage();
+storage.create();
 
 // 지난주의 월요일 날짜를 계산하는 함수
 const getLastWeekMonday = () => {
@@ -83,9 +88,15 @@ const SalesDaily: React.FC = () => {
       setLoading(true);
       try {
         const date = `${year}-${month}-${day}`;
-        const response = await axios.get(`/sales/daily?date=${date}`);
-        console.log('API Response:', response.data);
-        setData(response.data);
+        const cachedData = await storage.get(`sales-daily-${date}`);
+        if (cachedData) {
+          setData(cachedData);
+          console.log('Cached Data:', cachedData);
+        } else {
+          const response = await axios.get(`/sales/daily?date=${date}`);
+          console.log('API Response:', response.data);
+          setData(response.data);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -154,6 +165,11 @@ const SalesDaily: React.FC = () => {
           <div>Loading...</div>
         ) : (
           <LineChart data={data} />
+        )}
+         {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <BarChart data={data} />
         )}
       </IonContent>
       <IonFooter>

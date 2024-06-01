@@ -1,11 +1,13 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp,  IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { Storage } from '@ionic/storage';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ShopList from './pages/ShopList';
 import SalesDaily from './pages/SalesDaily';
 import PrivateRoute from './components/PrivateRoute';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,6 +40,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 
 setupIonicReact();
+
+const store = new Storage();
+store.create();
 
 const App: React.FC = () => (
   <IonApp>

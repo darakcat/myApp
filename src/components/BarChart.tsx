@@ -1,14 +1,14 @@
-// src/components/LineChart.tsx
+// src/components/BarChart.tsx
 import React from 'react';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 
-interface LineChartProps {
+interface BarChartProps {
   data: { date: string; amount: number; count: number }[];
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data }) => {
+const BarChart: React.FC<BarChartProps> = ({ data }) => {
   if (!data || data.length === 0) {
     return <div>No data available</div>;
   }
@@ -16,20 +16,20 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   const chartData = {
     labels: data.map(item => item.date),
     datasets: [
-      {
-        label: 'Amount',
-        data: data.map(item => item.amount),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        fill: false,
-      },
       // {
-      //   label: 'Count',
-      //   data: data.map(item => item.count),
-      //   borderColor: 'rgba(153, 102, 255, 1)',
-      //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
+      //   label: 'Amount',
+      //   data: data.map(item => item.amount),
+      //   borderColor: 'rgba(75, 192, 192, 1)',
+      //   backgroundColor: 'rgba(75, 192, 192, 0.2)',
       //   fill: false,
       // },
+      {
+        label: 'Count',
+        data: data.map(item => item.count),
+        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        fill: false,
+      },
     ],
   };
 
@@ -41,7 +41,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: 'Chart.js Bar Chart',
       },
     },
     scales: {
@@ -65,7 +65,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return <Bar data={chartData} options={options} />;
 };
 
-export default LineChart;
+export default BarChart;
