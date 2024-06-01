@@ -8,11 +8,11 @@ import { useHistory } from 'react-router-dom';
 import LineChart from '../components/LineChart';
 import BarChart from '../components/BarChart';
 import { Storage } from '@ionic/storage';
+import './SalesDaily.css';
 
 const storage = new Storage();
 storage.create();
 
-// 지난주의 월요일 날짜를 계산하는 함수
 const getLastWeekMonday = () => {
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -21,15 +21,12 @@ const getLastWeekMonday = () => {
   return lastMonday;
 };
 
-// 월요일을 생성하는 함수
 const getMondays = (year: number) => {
   const mondays = [];
   const date = new Date(year, 0, 1);
-  // 첫 번째 월요일 찾기
   while (date.getDay() !== 1) {
     date.setDate(date.getDate() + 1);
   }
-  // 모든 월요일 찾기
   while (date.getFullYear() === year) {
     mondays.push(new Date(date));
     date.setDate(date.getDate() + 7);
@@ -70,7 +67,6 @@ const SalesDaily: React.FC = () => {
         return { value: `${year}-${month}-${value}`, label: `${year}-${month}-${value}` };
       });
       setDayOptions(options);
-      // 기본 날짜 설정
       if (options.length > 0) {
         const [defaultOption] = options;
         const [defaultYear, defaultMonth, defaultDay] = defaultOption.value.split('-');
@@ -90,12 +86,13 @@ const SalesDaily: React.FC = () => {
         const date = `${year}-${month}-${day}`;
         const cachedData = await storage.get(`sales-daily-${date}`);
         if (cachedData) {
-          setData(cachedData);
           console.log('Cached Data:', cachedData);
+          setData(cachedData);
         } else {
           const response = await axios.get(`/sales/daily?date=${date}`);
           console.log('API Response:', response.data);
           setData(response.data);
+          await storage.set(`sales-daily-${date}`, response.data);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -129,7 +126,7 @@ const SalesDaily: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Sailes Daily</IonTitle>
+          <IonTitle>Sales Daily</IonTitle>
           <IonButtons slot="end">
             <IonIcon icon={logOutOutline} size="large" onClick={handleLogout} />
           </IonButtons>
@@ -141,7 +138,7 @@ const SalesDaily: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <div className="select-container">
           <Select
             options={yearOptions}
             value={yearOptions.find(option => option.value === year)}
@@ -164,12 +161,20 @@ const SalesDaily: React.FC = () => {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <LineChart data={data} />
+          <div className="chart-container">
+            <div className="chart">
+              <LineChart data={data} />
+            </div>
+          </div>
         )}
-         {loading ? (
+        {loading ? (
           <div>Loading...</div>
         ) : (
-          <BarChart data={data} />
+          <div className="chart-container">
+            <div className="chart">
+              <BarChart data={data} />
+            </div>
+          </div>
         )}
       </IonContent>
       <IonFooter>

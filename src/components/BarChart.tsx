@@ -35,6 +35,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
 
   const options: any = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -65,7 +66,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     },
   };
 
-  return <Bar data={chartData} options={options} />;
+  return <Bar data={chartData} options={options} min-height="300px" height="300px" />;
 };
 
 export default BarChart;

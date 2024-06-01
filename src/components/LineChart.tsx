@@ -35,6 +35,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
 
   const options: any = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -65,7 +66,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return <Line data={chartData} options={options} min-height="300px" height="300px" />;
 };
 
 export default LineChart;
