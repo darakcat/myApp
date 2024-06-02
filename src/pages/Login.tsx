@@ -13,10 +13,13 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     setLoading(true);
+    setError('');
     try {
       const response = await axios.post('http://127.0.0.1:8082/auth/token', { id, password });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
+      setId('');
+      setPassword('');
       history.push('/home');
     } catch (error: any) {
       setError(error.response ? error.response.data.detail : 'An error occurred');
