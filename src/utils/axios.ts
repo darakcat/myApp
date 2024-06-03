@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:8082', // API 서버 주소로 변경하세요
+  baseURL: 'http://127.0.0.1:8087', // API 서버 주소로 변경하세요
 });
 
 instance.interceptors.request.use(config => {

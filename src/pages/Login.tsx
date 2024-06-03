@@ -15,7 +15,7 @@ const Login: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://127.0.0.1:8082/auth/token', { id, password });
+      const response = await axios.post('http://127.0.0.1:8087/auth/token', { id, password });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       setId('');

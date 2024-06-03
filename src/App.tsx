@@ -48,17 +48,11 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
         <Route path="/login" component={Login} exact={true} />
-        <PrivateRoute path="/main" component={Home} exact={true} />
+        <PrivateRoute path="/home" component={Home} exact={true} />
         <PrivateRoute path="/shop" component={ShopList} exact={true} />
         <PrivateRoute path="/sales-daily" component={SalesDaily} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
+        <PrivateRoute path="/" component={Home} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
