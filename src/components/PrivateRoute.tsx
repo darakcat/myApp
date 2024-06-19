@@ -19,6 +19,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...re
         try {
           const decoded = jwtDecode<JwtPayload>(token);
           const currentTime = Date.now() / 1000;
+          console.log(currentTime)
+          console.log(decoded.exp)
 
           if (decoded.exp < currentTime) {
             localStorage.removeItem('token');

@@ -1,0 +1,11 @@
+.button-container {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 중앙 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+  }
+  
+  .button-container ion-button {
+    width: 200px; /* 버튼의 너비를 동일하게 설정 */
+  }
+  

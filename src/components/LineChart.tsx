@@ -1,15 +1,14 @@
-// src/components/LineChart.tsx
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 
 interface LineChartProps {
-  data: { date: string; amount: number; count: number }[];
+  data: { date: string; order_amount: number; order_count: number }[];
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data }) => {
-  if (!data || data.length === 0) {
+  if (!Array.isArray(data) || data.length === 0) {
     return <div>No data available</div>;
   }
 
@@ -17,19 +16,21 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     labels: data.map(item => item.date),
     datasets: [
       {
-        label: 'Amount',
-        data: data.map(item => item.amount),
+        label: 'Order Amount',
+        data: data.map(item => item.order_amount),
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: false,
+        yAxisID: 'y1',
       },
-      // {
-      //   label: 'Count',
-      //   data: data.map(item => item.count),
-      //   borderColor: 'rgba(153, 102, 255, 1)',
-      //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
-      //   fill: false,
-      // },
+      {
+        label: 'Order Count',
+        data: data.map(item => item.order_count),
+        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        fill: false,
+        yAxisID: 'y2',
+      },
     ],
   };
 
@@ -42,7 +43,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: 'Sales Daily Line Chart',
       },
     },
     scales: {
@@ -56,17 +57,31 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           text: 'Date',
         },
       },
-      y: {
-        beginAtZero: true,
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'left',
         title: {
           display: true,
-          text: 'Value',
+          text: 'Order Amount',
+        },
+      },
+      y2: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        grid: {
+          drawOnChartArea: false,
+        },
+        title: {
+          display: true,
+          text: 'Order Count',
         },
       },
     },
   };
 
-  return <Line data={chartData} options={options} min-height="300px" height="300px" />;
+  return <Line data={chartData} options={options} height="300px" />;
 };
 
 export default LineChart;

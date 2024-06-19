@@ -1,0 +1,43 @@
+.table-container {
+    padding: 16px;
+    overflow-x: auto; /* 수평 스크롤바 추가 */
+    overflow-y: auto; /* 수직 스크롤바 추가 (필요한 경우) */
+    max-height: 800px; /* 최대 높이 설정 (필요한 경우 조정) */
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .table thead {
+    background-color: #4c4c82;
+    color: #ffffff;
+  }
+  
+  .table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #ddd;
+  }
+  
+  .table th {
+    font-weight: bold;
+  }
+  
+  .table td {
+    font-weight: normal;
+  }
+  
+  .table .center {
+    text-align: center;
+  }
+  

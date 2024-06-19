@@ -1,34 +1,33 @@
-// src/components/BarChart.tsx
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 
 interface BarChartProps {
-  data: { date: string; amount: number; count: number }[];
+  data: { type: string; order_amount: number; order_count: number }[];
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data }) => {
-  if (!data || data.length === 0) {
+  if (!Array.isArray(data) || data.length === 0) {
     return <div>No data available</div>;
   }
 
   const chartData = {
-    labels: data.map(item => item.date),
+    labels: data.map(item => item.type),
     datasets: [
-      // {
-      //   label: 'Amount',
-      //   data: data.map(item => item.amount),
-      //   borderColor: 'rgba(75, 192, 192, 1)',
-      //   backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      //   fill: false,
-      // },
       {
-        label: 'Count',
-        data: data.map(item => item.count),
-        borderColor: 'rgba(153, 102, 255, 1)',
+        label: 'Order Amount',
+        data: data.map(item => item.order_amount),
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Order Count',
+        data: data.map(item => item.order_count),
         backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        fill: false,
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
       },
     ],
   };
@@ -42,18 +41,14 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
       },
       title: {
         display: true,
-        text: 'Chart.js Bar Chart',
+        text: 'Sales by Type',
       },
     },
     scales: {
       x: {
-        type: 'time',
-        time: {
-          unit: 'day',
-        },
         title: {
           display: true,
-          text: 'Date',
+          text: 'Type',
         },
       },
       y: {
@@ -66,7 +61,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     },
   };
 
-  return <Bar data={chartData} options={options} min-height="300px" height="300px" />;
+  return <Bar data={chartData} options={options} height="300px" />;
 };
 
 export default BarChart;

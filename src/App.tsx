@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import ShopList from './pages/ShopList';
 import SalesDaily from './pages/SalesDaily';
+import SalesDailyByStore from './pages/SalesDailyByStore';
 import PrivateRoute from './components/PrivateRoute';
 
 
@@ -52,6 +53,7 @@ const App: React.FC = () => (
         <PrivateRoute path="/home" component={Home} exact={true} />
         <PrivateRoute path="/shop" component={ShopList} exact={true} />
         <PrivateRoute path="/sales-daily" component={SalesDaily} exact={true} />
+        <PrivateRoute path="/sales-daily-by-store" component={SalesDailyByStore} exact={true} />
         <PrivateRoute path="/" component={Home} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>

@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonIcon, IonButton, IonFooter, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonIcon, IonButton, IonFooter } from '@ionic/react';
 import { logOutOutline, homeOutline } from 'ionicons/icons';
 import Select, { MultiValue } from 'react-select';
 import axios from '../utils/axios';
 import { useHistory } from 'react-router-dom';
 import { Storage } from '@ionic/storage';
-import LineChart from '../components/LineChart';
-import BarChart from '../components/BarChart';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
-import './SalesDaily.css';
+import './SalesDailyByStore.css';
 
 const storage = new Storage();
 storage.create();
 
-const SalesDaily: React.FC = () => {
-  const [data, setData] = useState<any>(null);
+const SalesDailyByStore: React.FC = () => {
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -60,19 +58,38 @@ const SalesDaily: React.FC = () => {
       const stores = selectedStores.map(store => store.value);
       const types = selectedTypes.map(type => type.value);
 
-      const response = await axios.get(`/puree/sales-daily`, {
-        params: {
-          start_date: start,
-          end_date: end,
-          shops: stores,
-          app_types: types
-        },
-        paramsSerializer: params => {
-          return Object.entries(params)
-            .map(([key, value]) => Array.isArray(value) ? value.map(v => `${key}=${encodeURIComponent(v)}`).join('&') : `${key}=${encodeURIComponent(value)}`)
-            .join('&');
-        }
-      });
+      const cachedData = await storage.get(`sales-daily-by-store-${start}-${end}`);
+
+      // if (cachedData) {
+      //   console.log('Cached Data:', cachedData);
+      //   setData(cachedData.data);
+      // } else {
+      //   const response = await axios.get(`/puree/sales-daily-by-store?start_date`, {
+      //     params: {
+      //       start_date: start,
+      //       end_date: end,
+      //       shops: storeValues,
+      //       app_types: typeValues
+      //     }
+      //   });
+      //   console.log('API Response:', response.data);
+      //   setData(response.data.data);
+      //   await storage.set(`sales-daily-by-store-${start}-${end}`, response.data);
+      // }
+
+      const response = await axios.get(`/puree/sales-daily-by-store`, {
+            params: {
+              start_date: start,
+              end_date: end,
+              shops: stores,
+              app_types: types
+            },
+            paramsSerializer: params => {
+              return Object.entries(params)
+                .map(([key, value]) => Array.isArray(value) ? value.map(v => `${key}=${encodeURIComponent(v)}`).join('&') : `${key}=${encodeURIComponent(value)}`)
+                .join('&');
+            }
+          });
       console.log('API Response:', response.data);
       setData(response.data.data);
     } catch (error) {
@@ -83,6 +100,7 @@ const SalesDaily: React.FC = () => {
     }
   };
 
+  const calculateOrderActivation = (dateCount: number) => (dateCount * 100 / 2).toFixed(1) + '%';
   const calculateCancelRate = (cancelCount: number, orderCount: number) => {
     if (orderCount === 0) {
       return '0.0%';
@@ -171,62 +189,38 @@ const SalesDaily: React.FC = () => {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <IonGrid>
-            <IonRow>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">전체 매출</div>
-                  <div className="info-box-value">{data.total_amount.toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">전체 주문수</div>
-                  <div className="info-box-value">{data.total_count.toLocaleString()} 건</div>
-                </div>
-              </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">전체 객단가</div>
-                  <div className="info-box-value">{(data.total_amount / data.total_count).toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">주문 취소 금액</div>
-                  <div className="info-box-value">{data.total_cancelled_amount.toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">매장 평균 매출</div>
-                  <div className="info-box-value">{(data.total_amount / selectedStores.length).toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">매장 일평균 매출</div>
-                  <div className="info-box-value">{(data.total_amount / selectedStores.length / 7).toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <div className="chart-container">
-                  <LineChart data={data.dates} />
-                </div>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <div className="chart-container">
-                  <BarChart data={data.types} />
-                </div>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
+          <div className="table-container">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>매장</th>
+                  <th>매출</th>
+                  <th>일평균매출</th>
+                  <th>주문발생일</th>
+                  <th>주문수</th>
+                  <th>객단가</th>
+                  <th>주문취소율</th>
+                  <th>주문취소금액</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.filter(item => 
+                  selectedStores.length === 0 || selectedStores.some(store => store.value === item.memo)
+                ).map(item => (
+                  <tr key={item.memo}>
+                    <td>{item.memo}</td>
+                    <td>{safeValue(item.order_amount).toLocaleString()}</td>
+                    <td>{safeValue(item.order_amount / item.date_count).toLocaleString()}</td>
+                    <td className="center">{safeValue(item.date_count)}</td>
+                    <td className="center">{safeValue(item.order_count)}</td>
+                    <td>{safeValue(Math.floor(item.order_amount / item.order_count)).toLocaleString()}</td>
+                    <td className="center">{calculateCancelRate(safeValue(item.order_cancel_count), safeValue(item.order_count))}</td>
+                    <td>{safeValue(item.order_cancel_amount).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </IonContent>
       <IonFooter>
@@ -238,4 +232,4 @@ const SalesDaily: React.FC = () => {
   );
 };
 
-export default SalesDaily;
+export default SalesDailyByStore;

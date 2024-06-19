@@ -29,7 +29,7 @@ const ShopList: React.FC = () => {
 
   const fetchPosts = async (page: number) => {
     try {
-      const response = await axios.get(`/puree/store?page=${page}&limit=20`);
+      const response = await axios.get(`/puree/store?page=${page}&limit=15`);
       const newPosts = response.data.data;
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setHasMore(newPosts.length > 0);
@@ -83,9 +83,9 @@ const ShopList: React.FC = () => {
             {posts.map((post) => (
               <IonItem key={post.biz_num}>
                 <IonLabel>
-                  <h2>{post.store_brand_name}</h2>
+                  <h2>{post.franchise_name}</h2>
+                  <p>{post.brand_name}</p>
                   <p>{post.biz_num}</p>
-                  <p>{post.shop_name}</p>
                 </IonLabel>
               </IonItem>
             ))}
