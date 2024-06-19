@@ -5,9 +5,10 @@ import 'chartjs-adapter-date-fns';
 
 interface LineChartProps {
   data: { date: string; order_amount: number; order_count: number }[];
+  selectedMetric: 'order_amount' | 'order_count';
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data }) => {
+const LineChart: React.FC<LineChartProps> = ({ data, selectedMetric }) => {
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No data available</div>;
   }
@@ -16,20 +17,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     labels: data.map(item => item.date),
     datasets: [
       {
-        label: 'Order Amount',
-        data: data.map(item => item.order_amount),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        label: selectedMetric === 'order_amount' ? 'Order Amount' : 'Order Count',
+        data: data.map(item => item[selectedMetric]),
+        borderColor: selectedMetric === 'order_amount' ? 'rgba(75, 192, 192, 1)' : 'rgba(153, 102, 255, 1)',
+        backgroundColor: selectedMetric === 'order_amount' ? 'rgba(75, 192, 192, 0.2)' : 'rgba(153, 102, 255, 0.2)',
         fill: false,
-        yAxisID: 'y1',
-      },
-      {
-        label: 'Order Count',
-        data: data.map(item => item.order_count),
-        borderColor: 'rgba(153, 102, 255, 1)',
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        fill: false,
-        yAxisID: 'y2',
       },
     ],
   };
@@ -57,25 +49,11 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
           text: 'Date',
         },
       },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'left',
+      y: {
+        beginAtZero: true,
         title: {
           display: true,
-          text: 'Order Amount',
-        },
-      },
-      y2: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        grid: {
-          drawOnChartArea: false,
-        },
-        title: {
-          display: true,
-          text: 'Order Count',
+          text: selectedMetric === 'order_amount' ? 'Order Amount' : 'Order Count',
         },
       },
     },

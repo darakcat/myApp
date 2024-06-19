@@ -22,13 +22,13 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
-      {
-        label: 'Order Count',
-        data: data.map(item => item.order_count),
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        borderColor: 'rgba(153, 102, 255, 1)',
-        borderWidth: 1,
-      },
+      // {
+      //   label: 'Order Count',
+      //   data: data.map(item => item.order_count),
+      //   backgroundColor: 'rgba(153, 102, 255, 0.2)',
+      //   borderColor: 'rgba(153, 102, 255, 1)',
+      //   borderWidth: 1,
+      // },
     ],
   };
 

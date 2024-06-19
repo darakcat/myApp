@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonIcon, IonButton, IonFooter, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { logOutOutline, homeOutline } from 'ionicons/icons';
-import Select, { MultiValue } from 'react-select';
+import Select, { MultiValue, SingleValue, ActionMeta } from 'react-select';
 import axios from '../utils/axios';
 import { useHistory } from 'react-router-dom';
 import { Storage } from '@ionic/storage';
@@ -23,13 +23,19 @@ const SalesDaily: React.FC = () => {
   const [selectedStores, setSelectedStores] = useState<{ value: string, label: string }[]>([]);
   const [storeOptions, setStoreOptions] = useState<{ value: string, label: string }[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<{ value: string, label: string }[]>([]);
+  const [selectedMetric, setSelectedMetric] = useState<{ value: 'order_amount' | 'order_count', label: string }>({ value: 'order_amount', label: '매출' });
   const history = useHistory();
 
-  const typeOptions = [
+  const typeOptions: { value: string; label: string }[] = [
     { value: 'Baemin', label: '배민' },
     { value: 'Baemin1', label: '배민1' },
     { value: 'Yogiyo', label: '요기요' },
     { value: 'CoupangEats', label: '쿠팡이츠' }
+  ];
+
+  const metricOptions: { value: 'order_amount' | 'order_count'; label: string }[] = [
+    { value: 'order_amount', label: '매출' },
+    { value: 'order_count', label: '주문수' }
   ];
 
   useEffect(() => {
@@ -117,6 +123,28 @@ const SalesDaily: React.FC = () => {
     setSelectedTypes(selectedOptions as { value: string, label: string }[]);
   };
 
+  const handleMetricChange = (selectedOption: SingleValue<{ value: 'order_amount' | 'order_count'; label: string }>, actionMeta: ActionMeta<{ value: 'order_amount' | 'order_count'; label: string }>) => {
+    if (selectedOption) {
+      setSelectedMetric(selectedOption);
+    }
+  };
+
+  const formatDateData = (dates: any) => {
+    return Object.keys(dates).map(date => ({
+      date,
+      order_amount: dates[date].order_amount,
+      order_count: dates[date].order_count
+    }));
+  };
+
+  const formatTypeData = (types: any) => {
+    return Object.keys(types).map(type => ({
+      type,
+      order_amount: types[type].order_amount,
+      order_count: types[type].order_count
+    }));
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -135,35 +163,41 @@ const SalesDaily: React.FC = () => {
       <IonContent className="ion-padding">
         <div className="table-container">
           <div style={{ marginBottom: '16px' }}>
-            <label>시작 날짜: </label>
+            <label style={{ marginRight: '8px' }}>시작</label>
             <DatePicker selected={startDate} onChange={(date: Date | null) => setStartDate(date)} />
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label>종료 날짜: </label>
+            <label style={{ marginRight: '8px' }}>종료</label>
             <DatePicker selected={endDate} onChange={(date: Date | null) => setEndDate(date)} />
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label>매장 선택: </label>
+          <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+            <label style={{ marginRight: '8px' }}>매장</label>
             <Select
               options={storeOptions}
               onChange={handleStoreChange}
               isMulti
               isClearable
-              placeholder="매장을 선택하세요"
+              placeholder="선택"
               menuPortalTarget={document.body}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{
+                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                container: base => ({ ...base, width: 200 })
+              }}
             />
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label>유형 선택: </label>
+          <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+            <label style={{ marginRight: '8px' }}>유형</label>
             <Select
               options={typeOptions}
               onChange={handleTypeChange}
               isMulti
               isClearable
-              placeholder="유형을 선택하세요"
+              placeholder="선택"
               menuPortalTarget={document.body}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{
+                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                container: base => ({ ...base, width: 200 })
+              }}
             />
           </div>
           <IonButton onClick={handleApply}>적용</IonButton>
@@ -191,38 +225,42 @@ const SalesDaily: React.FC = () => {
                   <div className="info-box-value">{(data.total_amount / data.total_count).toLocaleString()} 원</div>
                 </div>
               </IonCol>
-            </IonRow>
-            <IonRow>
               <IonCol>
                 <div className="info-box">
                   <div className="info-box-title">주문 취소 금액</div>
                   <div className="info-box-value">{data.total_cancelled_amount.toLocaleString()} 원</div>
                 </div>
               </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">매장 평균 매출</div>
-                  <div className="info-box-value">{(data.total_amount / selectedStores.length).toLocaleString()} 원</div>
-                </div>
-              </IonCol>
-              <IonCol>
-                <div className="info-box">
-                  <div className="info-box-title">매장 일평균 매출</div>
-                  <div className="info-box-value">{(data.total_amount / selectedStores.length / 7).toLocaleString()} 원</div>
+            </IonRow>
+            <IonRow>
+              <IonCol style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+                  <label style={{ marginRight: '8px' }}>선택</label>
+                  <Select<{ value: 'order_amount' | 'order_count', label: string }>
+                    value={selectedMetric}
+                    options={metricOptions}
+                    onChange={handleMetricChange}
+                    placeholder="선택"
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: base => ({ ...base, zIndex: 9999 }),
+                      container: base => ({ ...base, width: 120 })
+                    }}
+                  />
                 </div>
               </IonCol>
             </IonRow>
             <IonRow>
               <IonCol>
                 <div className="chart-container">
-                  <LineChart data={data.dates} />
+                  <LineChart data={formatDateData(data.dates)} selectedMetric={selectedMetric.value} />
                 </div>
               </IonCol>
             </IonRow>
             <IonRow>
               <IonCol>
                 <div className="chart-container">
-                  <BarChart data={data.types} />
+                  <BarChart data={formatTypeData(data.types)} />
                 </div>
               </IonCol>
             </IonRow>

@@ -21,3 +21,39 @@
   width: 100%;
   max-width: 800px;
 }
+
+.ion-padding {
+  --padding-top: 0;
+  --padding-end: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info-box {
+  background-color: #e6f7ff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height:400px;
+  min-width: 200px;
+}
+
+.info-box-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.info-box-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}

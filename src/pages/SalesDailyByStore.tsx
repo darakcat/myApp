@@ -153,35 +153,41 @@ const SalesDailyByStore: React.FC = () => {
       <IonContent className="ion-padding">
         <div className="table-container">
           <div style={{ marginBottom: '16px' }}>
-            <label>시작 날짜: </label>
+            <label style={{ marginRight: '8px' }}>시작</label>
             <DatePicker selected={startDate} onChange={(date: Date | null) => setStartDate(date)} />
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label>종료 날짜: </label>
+            <label style={{ marginRight: '8px' }}>종료</label>
             <DatePicker selected={endDate} onChange={(date: Date | null) => setEndDate(date)} />
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label>매장 선택: </label>
+          <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+            <label style={{ marginRight: '8px' }}>매장</label>
             <Select
               options={storeOptions}
               onChange={handleStoreChange}
               isMulti
               isClearable
-              placeholder="매장을 선택하세요"
+              placeholder="선택"
               menuPortalTarget={document.body}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{
+                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                container: base => ({ ...base, width: 200 })
+              }}
             />
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <label>유형 선택: </label>
+          <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+            <label style={{ marginRight: '8px' }}>유형</label>
             <Select
               options={typeOptions}
               onChange={handleTypeChange}
               isMulti
               isClearable
-              placeholder="유형을 선택하세요"
+              placeholder="선택"
               menuPortalTarget={document.body}
-              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+              styles={{
+                menuPortal: base => ({ ...base, zIndex: 9999 }),
+                container: base => ({ ...base, width: 200 })
+              }}
             />
           </div>
           <IonButton onClick={handleApply}>적용</IonButton>
